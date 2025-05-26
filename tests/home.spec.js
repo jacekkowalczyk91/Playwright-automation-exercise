@@ -24,7 +24,11 @@ test.describe('User registration test', () => {
     const contactUsSubject = 'testing';
     const contactUsMessage = 'test';
 
-    await homePage.mainMenu.contactUsButton.click({ timeout: 2000 });
+    await homePage.mainMenu.contactUsButton.waitFor({
+      state: 'visible',
+      timeout: 3000,
+    });
+    await homePage.mainMenu.contactUsButton.click();
     await expect(page.locator('.contact-form > h2')).toBeVisible();
 
     await homePage.contactUsName.fill(contactUsName);
@@ -40,6 +44,8 @@ test.describe('User registration test', () => {
       console.log('Alert:', dialog.message());
       await dialog.accept();
     });
+
+    await page.locator('[data-qa="submit-button"]').scrollIntoViewIfNeeded();
     await page.locator('[data-qa="submit-button"]').click();
 
     await expect(page.locator('.status.alert-success')).toBeVisible();

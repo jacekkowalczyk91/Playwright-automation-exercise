@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/login.page';
 import { RegisterPage } from '../pages/register.page';
+import { loginData } from '../test-data/login-data';
 
 test.describe('User registration test', () => {
   let loginPage;
@@ -72,5 +73,17 @@ test.describe('User registration test', () => {
     await registerPage.deleteAccountButton.click();
 
     await expect(registerPage.deleteAccountText).toBeVisible();
+  });
+  test('register with existing email', async ({ page }) => {
+    const existingName = loginData.userName;
+    const existingEmail = loginData.userEmail;
+
+    await loginPage.signUpName.fill(existingName);
+    await loginPage.signUpEmail.fill(existingEmail);
+    await loginPage.signUpButton.click();
+
+    await expect(
+      page.locator('#form > div > div > div:nth-child(3) > div > form > p')
+    ).toHaveText('Email Address already exist!');
   });
 });

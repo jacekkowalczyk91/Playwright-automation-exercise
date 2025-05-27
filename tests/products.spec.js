@@ -41,4 +41,34 @@ test.describe('User registration test', () => {
     await expect(productsPage.productCondition).toBeVisible();
     await expect(productsPage.productBrand).toBeVisible();
   });
+  test('Verify search product', async ({ page }) => {
+    const searchName = 'top';
+    const expectedSearches = ['top', 'shirt'];
+    const productsTitle = page.locator(
+      'div.features_items.productinfo.text-center > p:visible'
+    );
+    const texts = await productsTitle.allTextContents();
+
+    await productsPage.mainMenu.productsButton.waitFor({
+      state: 'visible',
+      timeout: 3000,
+    });
+    await productsPage.mainMenu.productsButton.click();
+    await expect(productsPage.mainMenu.productsButton).toHaveCSS(
+      'color',
+      'rgb(255, 165, 0)'
+    );
+
+    await page.locator('#search_product').fill(searchName);
+    await page.locator('#submit_search').click();
+
+    for (const text of texts) {
+      const lowerText = text.toLowerCase();
+      const hasMatch = expectedSearches.some((expected) =>
+        lowerText.includes(expected.toLowerCase())
+      );
+      
+      expect(hasMatch).toBe(true);
+    }
+  });
 });

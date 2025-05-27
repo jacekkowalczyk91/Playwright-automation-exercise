@@ -59,15 +59,15 @@ test.describe('User registration test', () => {
       'rgb(255, 165, 0)'
     );
 
-    await page.locator('#search_product').fill(searchName);
-    await page.locator('#submit_search').click();
+    await productsPage.searchInput.fill(searchName);
+    await productsPage.searchSubmitButton.click();
 
     for (const text of texts) {
       const lowerText = text.toLowerCase();
       const hasMatch = expectedSearches.some((expected) =>
         lowerText.includes(expected.toLowerCase())
       );
-      
+
       expect(hasMatch).toBe(true);
     }
   });

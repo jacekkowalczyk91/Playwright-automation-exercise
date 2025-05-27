@@ -15,5 +15,8 @@ export class ProductsPage {
     this.productAvailability = page.locator('text=/^Availability:\\s*\\S+/');
     this.productCondition = page.locator('text=/^Condition:\\s*\\S+/');
     this.productBrand = page.locator('text=/^Brand:\\s*\\S+/');
+
+    this.searchInput = page.locator('#search_product')
+    this.searchSubmitButton = page.locator('#submit_search')
   }
 }

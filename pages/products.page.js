@@ -9,6 +9,8 @@ export class ProductsPage {
     this.productDetailView = page.locator(
       'ul.nav.nav-pills.nav-justified > li > a'
     );
+    this.productAddToCartButton = page.locator('.btn.btn-default.add-to-cart');
+
     this.productTitle = page.locator('div.product-information > h2');
     this.productCategory = page.locator('text=/^Category:\\s*\\S+/');
     this.productPrice = page.locator('div.product-information > span');
@@ -16,7 +18,7 @@ export class ProductsPage {
     this.productCondition = page.locator('text=/^Condition:\\s*\\S+/');
     this.productBrand = page.locator('text=/^Brand:\\s*\\S+/');
 
-    this.searchInput = page.locator('#search_product')
-    this.searchSubmitButton = page.locator('#submit_search')
+    this.searchInput = page.locator('#search_product');
+    this.searchSubmitButton = page.locator('#submit_search');
   }
 }

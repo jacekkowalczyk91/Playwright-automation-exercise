@@ -18,7 +18,7 @@ test.describe('User registration test', () => {
       'rgb(255, 165, 0)'
     );
   });
-  test.only('Contact Us form', async ({ page }) => {
+  test('Contact Us form', async ({ page }) => {
     const contactUsName = 'Jill';
     const contactUsEmail = 'test@test.pl';
     const contactUsSubject = 'testing';
@@ -36,22 +36,35 @@ test.describe('User registration test', () => {
     await homePage.contactUsSubject.fill(contactUsSubject);
     await homePage.contactUsMessage.fill(contactUsMessage);
 
-    await page
-      .locator('#contact-us-form > div:nth-child(6) > input')
-      .setInputFiles('C:/nsispromotion_log.txt');
+    await homePage.contactUsFormUpload.setInputFiles(
+      'C:/nsispromotion_log.txt'
+    );
 
     page.once('dialog', async (dialog) => {
       console.log('Alert:', dialog.message());
       await dialog.accept();
     });
 
-    await page.locator('[data-qa="submit-button"]').scrollIntoViewIfNeeded();
-    await page.locator('[data-qa="submit-button"]').click();
+    await homePage.contactUsFormSubmitButton.scrollIntoViewIfNeeded();
+    await homePage.contactUsFormSubmitButton.click();
 
-    await expect(page.locator('.status.alert-success')).toBeVisible();
+    await expect(page.locator('.status.alert-success')).toBeVisible({
+      timeout: 2000,
+    });
 
     await page.locator('.btn.btn-success').click();
     await expect(homePage.mainMenu.homePagetButton).toHaveCSS(
+      'color',
+      'rgb(255, 165, 0)'
+    );
+  });
+  test('Verify test cases page', async ({ page }) => {
+    await homePage.mainMenu.testCasesButton.waitFor({
+      state: 'visible',
+      timeout: 3000,
+    });
+    await homePage.mainMenu.testCasesButton.click();
+    await expect(homePage.mainMenu.testCasesButton).toHaveCSS(
       'color',
       'rgb(255, 165, 0)'
     );

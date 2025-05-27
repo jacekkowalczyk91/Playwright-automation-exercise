@@ -10,5 +10,8 @@ export class MainMenuComponent {
     this.contactUsButton = page.locator(
       'ul.nav.navbar-nav > li:nth-child(8) > a'
     );
+    this.testCasesButton = page.locator(
+      'ul.nav.navbar-nav > li:nth-child(5) > a'
+    );
   }
 }

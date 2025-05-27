@@ -13,7 +13,7 @@ test.describe('User registration test', () => {
 
     await loginPage.cookiesBanner.waitFor({ state: 'visible', timeout: 2000 });
     await loginPage.cookiesBanner.click();
-    await expect(homePage.mainMenu.homePagetButton).toHaveCSS(
+    await expect(homePage.mainMenu.homePageButton).toHaveCSS(
       'color',
       'rgb(255, 165, 0)'
     );
@@ -53,7 +53,7 @@ test.describe('User registration test', () => {
     });
 
     await page.locator('.btn.btn-success').click();
-    await expect(homePage.mainMenu.homePagetButton).toHaveCSS(
+    await expect(homePage.mainMenu.homePageButton).toHaveCSS(
       'color',
       'rgb(255, 165, 0)'
     );
@@ -68,5 +68,38 @@ test.describe('User registration test', () => {
       'color',
       'rgb(255, 165, 0)'
     );
+  });
+  test('Verify all products and product detail page', async ({ page }) => {
+    await homePage.mainMenu.productsButton.waitFor({
+      state: 'visible',
+      timeout: 3000,
+    });
+    await homePage.mainMenu.productsButton.click();
+    await expect(homePage.mainMenu.productsButton).toHaveCSS(
+      'color',
+      'rgb(255, 165, 0)'
+    );
+    await expect(page.locator('.features_items')).toBeVisible();
+
+    await page
+      .locator('ul.nav.nav-pills.nav-justified > li > a')
+      .first()
+      .click();
+
+    await expect(page.locator('div.product-information > h2')).toBeVisible();
+    await expect(page.getByText('Category:')).toBeVisible();
+    await expect(
+      page.locator('div.product-information > span').first()
+    ).toHaveText(/Rs\. \d+/);
+
+    await expect(
+      page.getByText(/^Availability:\s*\S+/, { exact: false })
+    ).toBeVisible();
+    await expect(
+      page.getByText(/^Condition:\s*\S+/, { exact: false })
+    ).toBeVisible();
+    await expect(
+      page.getByText(/^Brand:\s*\S+/, { exact: false })
+    ).toBeVisible();
   });
 });

@@ -41,4 +41,18 @@ test.describe('User registration test', () => {
 
     await expect(homePage.subscriptionSubmitButton).toBeVisible();
   });
+  test('Verify subscription in cart page', async ({ page }) => {
+    const subscriptionEmail = 'test@test.pl';
+
+    await homePage.mainMenu.cartButton.click();
+
+    await page.locator('footer').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500);
+    await expect(homePage.subscriptionText).toHaveText('Subscription');
+
+    await homePage.subscriptionInput.fill(subscriptionEmail);
+    await page.locator('#subscribe').click();
+
+    await expect(homePage.subscriptionSubmitButton).toBeVisible();
+  });
 });

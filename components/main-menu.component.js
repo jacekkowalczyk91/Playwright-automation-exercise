@@ -16,5 +16,6 @@ export class MainMenuComponent {
     this.productsButton = page.locator(
       'ul.nav.navbar-nav > li:nth-child(2) > a'
     );
+    this.cartButton = page.locator('ul.nav.navbar-nav > li:nth-child(3) > a');
   }
 }

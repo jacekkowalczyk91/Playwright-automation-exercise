@@ -17,7 +17,7 @@ test.describe('User registration test', () => {
       'color',
       'rgb(255, 165, 0)'
     );
-  });  
+  });
   test('Verify test cases page', async ({ page }) => {
     await homePage.mainMenu.testCasesButton.waitFor({
       state: 'visible',
@@ -28,5 +28,17 @@ test.describe('User registration test', () => {
       'color',
       'rgb(255, 165, 0)'
     );
+  });
+  test('Verify subscription in homepage', async ({ page }) => {
+    const subscriptionEmail = 'test@test.pl';
+
+    await page.locator('footer').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500);
+    await expect(homePage.subscriptionText).toHaveText('Subscription');
+
+    await homePage.subscriptionInput.fill(subscriptionEmail);
+    await page.locator('#subscribe').click();
+
+    await expect(homePage.subscriptionSubmitButton).toBeVisible();
   });
 });

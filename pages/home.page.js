@@ -12,5 +12,9 @@ export class HomePage {
     this.contactUsFormUpload = page.locator(
       '#contact-us-form > div:nth-child(6) > input'
     );
+
+    this.subscriptionText = page.locator('.single-widget > h2')
+    this.subscriptionInput = page.locator('#susbscribe_email')
+    this.subscriptionSubmitButton = page.locator('#subscribe')
   }
 }

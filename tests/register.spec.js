@@ -3,7 +3,7 @@ import { LoginPage } from '../pages/login.page';
 import { RegisterPage } from '../pages/register.page';
 import { loginData } from '../test-data/login-data';
 
-test.describe('User registration test', () => {
+test.describe('User registration tests', () => {
   let loginPage;
   let registerPage;
   test.beforeEach(async ({ page }) => {

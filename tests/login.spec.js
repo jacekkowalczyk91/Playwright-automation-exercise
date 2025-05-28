@@ -69,6 +69,8 @@ test.describe('User Login page tests', () => {
     );
 
     await loginPage.logoutButton.click();
-    await expect(page.locator('.login-form > h2')).toHaveText('Login to your account');
+    await expect(page.locator('.login-form > h2')).toHaveText(
+      'Login to your account'
+    );
   });
 });

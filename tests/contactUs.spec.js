@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/login.page';
 import { ContactUsPage } from '../pages/contactus.page';
 
-test.describe('User registration test', () => {
+test.describe('Contact Us tests', () => {
   /** @type {import('../pages/contactus.page').ContactUsPage} */
   let contactUsPage;
   let loginPage;

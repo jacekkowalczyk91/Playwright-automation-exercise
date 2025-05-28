@@ -3,7 +3,7 @@ import { HomePage } from '../pages/home.page';
 import { LoginPage } from '../pages/login.page';
 import { ProductsPage } from '../pages/products.page';
 
-test.describe('User registration test', () => {
+test.describe('Homepage tests', () => {
   /** @type {import('../pages/home.page').HomePage} */
   /** @type {import('../pages/products.page').ProductsPage} */
   let homePage;

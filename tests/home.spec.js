@@ -41,8 +41,8 @@ test.describe('Homepage tests', () => {
     await expect(homePage.subscriptionText).toHaveText('Subscription');
 
     await homePage.subscriptionInput.fill(subscriptionEmail);
-    await page.locator('#subscribe').click();
+    await homePage.subscriptionSubmitButton.click();
 
     await expect(homePage.subscriptionSubmitButton).toBeVisible();
-  });  
+  });
 });

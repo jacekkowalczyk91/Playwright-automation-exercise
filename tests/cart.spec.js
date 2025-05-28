@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { HomePage } from '../pages/home.page';
 import { LoginPage } from '../pages/login.page';
 import { CartPage } from '../pages/cart.page';
+import { ProductsPage } from '../pages/products.page';
 
 test.describe('Homepage tests', () => {
   /** @type {import('../pages/home.page').HomePage} */
@@ -9,11 +10,13 @@ test.describe('Homepage tests', () => {
   let homePage;
   let loginPage;
   let cartPage;
+  let productsPage;
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     homePage = new HomePage(page);
     loginPage = new LoginPage(page);
     cartPage = new CartPage(page);
+    productsPage = new ProductsPage(page);
 
     await loginPage.cookiesBanner.waitFor({ state: 'visible', timeout: 2000 });
     await loginPage.cookiesBanner.click();
@@ -33,7 +36,7 @@ test.describe('Homepage tests', () => {
     await expect(homePage.subscriptionText).toHaveText('Subscription');
 
     await homePage.subscriptionInput.fill(subscriptionEmail);
-    await page.locator('#subscribe').click();
+    await homePage.subscriptionSubmitButton.click();
 
     await expect(homePage.subscriptionSubmitButton).toBeVisible();
   });
@@ -57,11 +60,28 @@ test.describe('Homepage tests', () => {
         await page.waitForTimeout(1000);
       }
     }
-    await page.waitForSelector(cartPage.cartProductsInfoBox);
-    const cartItems = await page.$$(cartPage.productInfo);
+    await cartPage.cartProductsInfoBox.waitFor();
+    const cartItems = await cartPage.productInfo.allTextContents();
     const itemsInCart = cartItems.length;
 
     console.log(`Produkty w koszyku: ${itemsInCart}`);
     expect(itemsInCart).toBe(totalProducts);
+  });
+  test('Verify products quantity in cart', async ({ page }) => {
+    const quantityNumber = '7';
+
+    await productsPage.productDetailView.first().click();
+
+    await expect(cartPage.productsDetailViewInCart).toBeVisible();
+
+    await cartPage.quantityInProductDetail.fill(quantityNumber);
+    await cartPage.addToCartInProductDetailButton.click();
+    await cartPage.cartViewInProductDetail.click();
+
+    await expect(cartPage.cartProductsInfoBox).toBeVisible();
+
+    const quantityInCart = await cartPage.quantityInCart.innerText();
+    console.log(quantityInCart);
+    expect(quantityInCart).toBe(quantityNumber);
   });
 });

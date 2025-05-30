@@ -5,7 +5,7 @@ import { CartPage } from '../pages/cart.page';
 import { ProductsPage } from '../pages/products.page';
 import { RegisterPage } from '../pages/register.page';
 import { registerData } from '../test-data/register-data';
-import { stringify } from 'querystring';
+import { cartData } from '../test-data/cart-data';
 
 test.describe('Homepage tests', () => {
   /** @type {import('../pages/home.page').HomePage} */
@@ -91,16 +91,17 @@ test.describe('Homepage tests', () => {
   test('Register while checkout', async ({ page }) => {
     const productIds = [1, 5];
     const newUserName = 'newuser';
-    const newUserEmail = '26newsuer@gmail.com';
+    const newUserEmail = '35newsuer@gmail.com';
+    const deliveryCommentText = 'no comment';
+    const getProductsLocator = (id) =>
+      page.locator(
+        `.features_items .productinfo.text-center a[data-product-id="${id}"]`
+      );
 
     for (let i = 0; i < productIds.length; i++) {
       const id = productIds[i];
 
-      await page
-        .locator(
-          `.features_items .productinfo.text-center a[data-product-id="${id}"]`
-        )
-        .click();
+      await getProductsLocator(id).click();
       await page.waitForTimeout(1000);
       if (i === productIds.length - 1) {
         await cartPage.cartViewInProductDetail.click();
@@ -112,8 +113,8 @@ test.describe('Homepage tests', () => {
 
     await expect(cartPage.cartProductsInfoBox).toBeVisible();
 
-    await page.locator('.btn.check_out').click();
-    await page.locator('#checkoutModal .modal-body a[href="/login"]').click();
+    await cartPage.cartCheckOutButton.click();
+    await cartPage.registerLoginButtonAfterCheckout.click();
 
     await loginPage.signUpName.fill(newUserName);
     await loginPage.signUpEmail.fill(newUserEmail);
@@ -130,25 +131,17 @@ test.describe('Homepage tests', () => {
     await cartPage.mainMenu.cartButton.click();
     await cartPage.cartCheckOutButton.click();
 
-    await expect(
-      page.locator('#address_delivery .address_title > h3')
-    ).toBeVisible();
+    await expect(cartPage.deliveryAddressBoxTitle).toBeVisible();
 
-    const nameText = await page
-      .locator('#address_delivery .address_firstname.address_lastname')
-      .textContent();
+    const nameText = await cartPage.deliveryTitleFirstAndLastName.textContent();
 
     expect(nameText.trim().startsWith(registerData.userTitle)).toBe(true);
 
-    await expect(
-      page.locator('#address_delivery .address_firstname.address_lastname')
-    ).toContainText(
+    await expect(cartPage.deliveryTitleFirstAndLastName).toContainText(
       `${registerData.userFirstName} ${registerData.userLastName}`
     );
 
-    const companyAndAdressesLocator = page.locator(
-      '#address_delivery .address_address1.address_address2'
-    );
+    const companyAndAdressesLocator = cartPage.deliveryCompanyAndAddress;
     const companyAndAdresses = [
       registerData.userCompany,
       registerData.userAddress,
@@ -159,42 +152,24 @@ test.describe('Homepage tests', () => {
         companyAndAdresses[i]
       );
     }
-    await expect(
-      page.locator(
-        '#address_delivery .address_city.address_state_name.address_postcode'
-      )
-    ).toHaveText(
+    await expect(cartPage.deliveryCityStatePostcode).toHaveText(
       `${registerData.userCity} ${registerData.userState} ${registerData.userZipCode}`
     );
-    await expect(
-      page.locator('#address_delivery .address_country_name')
-    ).toHaveText(registerData.userCountry);
-    await expect(page.locator('#address_delivery .address_phone')).toHaveText(
+    await expect(cartPage.deliveryCountryName).toHaveText(
+      registerData.userCountry
+    );
+    await expect(cartPage.deliveryPhoneNumber).toHaveText(
       registerData.userMobileNumber
     );
 
-    const cartProductIds = await page
-      .locator('[id^="product-"]')
-      .evaluateAll((elements) =>
-        elements.map((el) => el.id.replace('product-', ''))
-      );
+    await cartPage.reviewingProductsInCheckout(cartPage, productIds);
 
-    for (const expectedId of productIds) {
-      expect(cartProductIds).toContain(String(expectedId));
-    }
+    await cartPage.deliveryComment.fill(deliveryCommentText);
+    await cartPage.cartCheckOutButton.click();
 
-    await page.locator('.form-control').fill('no comment');
-    await page.locator('.check_out').click();
-    await page
-      .locator('[data-qa = "name-on-card"]')
-      .fill(`${registerData.userFirstName} ${registerData.userLastName}`);
-    await page.locator('[data-qa = "card-number"]').fill('111222333444555666');
-    await page.locator('[data-qa = "cvc"]').fill('111');
-    await page.locator('[data-qa = "expiry-month"]').fill('01/01');
-    await page.locator('[data-qa = "expiry-year"]').fill('2000');
-    await page.locator('[data-qa = "pay-button"]').click();
+    await cartPage.fillingCreditCardData(cartPage, registerData, cartData);
 
-    await expect(page.locator('[data-qa = "order-placed"]')).toBeVisible();
+    await expect(cartPage.verifyOrderPlacedText).toBeVisible();
 
     await registerPage.deleteAccountButton.click();
     await expect(registerPage.deleteAccountText).toBeVisible();

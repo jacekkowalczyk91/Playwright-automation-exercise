@@ -17,5 +17,6 @@ export class CartPage {
     this.quantityInCart = page.locator('.cart_quantity > button');
     this.productsDetailViewInCart = page.locator('.product-details');
     this.addToCartInProductDetailButton = page.locator('button.cart')
+    this.cartCheckOutButton = page.locator('.check_out')
   }
 }

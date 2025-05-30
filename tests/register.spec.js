@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/login.page';
 import { RegisterPage } from '../pages/register.page';
 import { loginData } from '../test-data/login-data';
+import { registerData } from '../test-data/register-data';
 
 test.describe('User registration tests', () => {
   let loginPage;
@@ -18,49 +19,15 @@ test.describe('User registration tests', () => {
 
   test('register account', async ({ page }) => {
     //Arrange
-    const newUserName = 'newuser';
-    const newUserEmail = '5newsuer@gmail.com';
-    const newUserPassword = 'newuserpass';
-    const userTitle = 'Mr';
-    const userBirthDay = '2';
-    const userBirthMonth = '4';
-    const userBirthYear = '2000';
-    const userFirstName = 'userFirstName';
-    const userLastName = 'userLastName';
-    const userCompany = 'Itest';
-    const userAddress = 'Warszawska';
-    const userAdditionalAddress = '11b';
-    const userCountry = 'United States';
-    const userState = 'Manhattan';
-    const userCity = 'Los Angeles';
-    const userZipCode = '11-111';
-    const userMobileNumber = '222111444';
+    const newUserEmail = '15newsuer@gmail.com';
 
     //Act
-    await loginPage.signUpName.fill(newUserName);
+    await loginPage.signUpName.fill(registerData.newUserName);
     await loginPage.signUpEmail.fill(newUserEmail);
     await loginPage.signUpButton.click();
     await expect(registerPage.accountInformationPageText).toBeVisible();
 
-    await registerPage.selectRadioByTitle(userTitle);
-    await registerPage.registerAccountPassword.fill(newUserPassword);
-    await registerPage.userBirthDay.selectOption(userBirthDay);
-    await registerPage.userBirthMonth.selectOption(userBirthMonth);
-    await registerPage.userBirthYear.selectOption(userBirthYear);
-    await registerPage.newsletterSignUpCheckbox.check();
-    await registerPage.specialOfferCheckbox.check();
-
-    await registerPage.userFirstName.fill(userFirstName);
-    await registerPage.userLastName.fill(userLastName);
-    await registerPage.userCompany.fill(userCompany);
-    await registerPage.userAddress.fill(userAddress);
-    await registerPage.userAdditionalAddress.fill(userAdditionalAddress);
-    await registerPage.userCountry.selectOption(userCountry);
-    await registerPage.userState.fill(userState);
-    await registerPage.userCity.fill(userCity);
-    await registerPage.userZipCode.fill(userZipCode);
-    await registerPage.userMobileNumber.fill(userMobileNumber);
-    await registerPage.createAccountButton.click();
+    await registerPage.fillRegistrationForm(registerPage, registerData);
 
     await expect(registerPage.accountCreatedText).toBeVisible();
 
@@ -68,18 +35,15 @@ test.describe('User registration tests', () => {
 
     await expect(loginPage.userNameInMenu).toBeVisible({ timeout: 2000 });
     await expect(loginPage.userNameInMenu).toHaveText(
-      `Logged in as ${newUserName}`
+      `Logged in as ${registerData.newUserName}`
     );
     await registerPage.deleteAccountButton.click();
 
     await expect(registerPage.deleteAccountText).toBeVisible();
   });
   test('register with existing email', async ({ page }) => {
-    const existingName = loginData.userName;
-    const existingEmail = loginData.userEmail;
-
-    await loginPage.signUpName.fill(existingName);
-    await loginPage.signUpEmail.fill(existingEmail);
+    await loginPage.signUpName.fill(loginData.userName);
+    await loginPage.signUpEmail.fill(loginData.userEmail);
     await loginPage.signUpButton.click();
 
     await expect(

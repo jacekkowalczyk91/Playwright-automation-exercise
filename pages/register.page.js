@@ -41,4 +41,30 @@ export class RegisterPage {
     );
     await selectTitle.check();
   }
+  async fillRegistrationForm(registerPage, registerData) {
+    await registerPage.selectRadioByTitle(registerData.userTitle);
+    await registerPage.registerAccountPassword.fill(
+      registerData.newUserPassword
+    );
+    await registerPage.userBirthDay.selectOption(registerData.userBirthDay);
+    await registerPage.userBirthMonth.selectOption(registerData.userBirthMonth);
+    await registerPage.userBirthYear.selectOption(registerData.userBirthYear);
+    await registerPage.newsletterSignUpCheckbox.check();
+    await registerPage.specialOfferCheckbox.check();
+
+    await registerPage.userFirstName.fill(registerData.userFirstName);
+    await registerPage.userLastName.fill(registerData.userLastName);
+    await registerPage.userCompany.fill(registerData.userCompany);
+    await registerPage.userAddress.fill(registerData.userAddress);
+    await registerPage.userAdditionalAddress.fill(
+      registerData.userAdditionalAddress
+    );
+    await registerPage.userCountry.selectOption(registerData.userCountry);
+    await registerPage.userState.fill(registerData.userState);
+    await registerPage.userCity.fill(registerData.userCity);
+    await registerPage.userZipCode.fill(registerData.userZipCode);
+    await registerPage.userMobileNumber.fill(registerData.userMobileNumber);
+
+    await registerPage.createAccountButton.click();
+  }
 }

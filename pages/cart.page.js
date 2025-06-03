@@ -73,4 +73,24 @@ export class CartPage {
     await cartPage.creditCardExpiringYear.fill(cartData.creditCardExpiringYear);
     await cartPage.creditCardPayButton.click();
   }
+  async addingProductsToCart(page, cartPage, productIds) {
+    // const productIds = [1, 2, 3];
+
+    await cartPage.mainMenu.productsButton.click();
+
+    for (let i = 0; i < productIds.length; i++) {
+      const id = productIds[i];
+
+      await page
+        .locator(`.productinfo.text-center a[data-product-id="${id}"]`)
+        .click();
+      await page.waitForTimeout(1000);
+      if (i === productIds.length - 1) {
+        await cartPage.cartViewInProductDetail.click();
+      } else {
+        await cartPage.continueShoppingButton.click();
+        await page.waitForTimeout(1000);
+      }
+    }
+  }
 }

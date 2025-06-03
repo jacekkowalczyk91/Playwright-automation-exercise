@@ -50,20 +50,7 @@ test.describe('Homepage tests', () => {
 
     await cartPage.mainMenu.productsButton.click();
 
-    for (let i = 0; i < productIds.length; i++) {
-      const id = productIds[i];
-
-      await page
-        .locator(`.productinfo.text-center a[data-product-id="${id}"]`)
-        .click();
-      await page.waitForTimeout(1000);
-      if (i === productIds.length - 1) {
-        await cartPage.cartViewInProductDetail.click();
-      } else {
-        await cartPage.continueShoppingButton.click();
-        await page.waitForTimeout(1000);
-      }
-    }
+    await cartPage.addingProductsToCart(page, cartPage, productIds);
     await cartPage.cartProductsInfoBox.waitFor();
     const cartItems = await cartPage.productInfo.allTextContents();
     const itemsInCart = cartItems.length;
@@ -161,7 +148,6 @@ test.describe('Homepage tests', () => {
     await expect(cartPage.deliveryPhoneNumber).toHaveText(
       registerData.userMobileNumber
     );
-
     await cartPage.reviewingProductsInCheckout(cartPage, productIds);
 
     await cartPage.deliveryComment.fill(deliveryCommentText);
@@ -173,5 +159,26 @@ test.describe('Homepage tests', () => {
 
     await registerPage.deleteAccountButton.click();
     await expect(registerPage.deleteAccountText).toBeVisible();
+  });
+  test('Remove products from cart', async ({ page }) => {
+    const productIds = [1, 2, 3];
+
+    await cartPage.addingProductsToCart(page, cartPage, productIds);
+
+    await cartPage.mainMenu.cartButton.click();
+    await expect(cartPage.cartProductsInfoBox).toBeVisible();
+
+    const cartItemsLocator = page.locator('[id^="product-"]');
+    const cartItems = await cartItemsLocator.count();
+    expect(cartItems).toBeGreaterThan(0);
+
+    const randomIndex = Math.floor(Math.random() * cartItems);
+    const randomItem = cartItemsLocator.nth(randomIndex);
+
+    await randomItem.locator('.cart_delete a').click();
+    await expect(cartItemsLocator).toHaveCount(cartItems - 1);
+
+    const cartAfterDelete = await cartItemsLocator.count();
+    expect(cartAfterDelete).toBe(cartItems - 1);
   });
 });

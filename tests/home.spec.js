@@ -45,4 +45,17 @@ test.describe('Homepage tests', () => {
 
     await expect(homePage.subscriptionSubmitButton).toBeVisible();
   });
+  test('View Category Products', async ({ page }) => {
+    await expect(page.locator('.panel-group.category-products')).toBeVisible();
+
+    await homePage.categoryWomenButton.click();
+    await homePage.categorWomenyDressButton.click();
+
+    await expect(homePage.categoryWomenDressTitle).toBeVisible();
+
+    await homePage.categoryMenButton.click();
+    await homePage.categoryMenJeansButton.click();
+
+    await expect(homePage.categoryMenJeansTitle).toBeVisible();
+  });
 });

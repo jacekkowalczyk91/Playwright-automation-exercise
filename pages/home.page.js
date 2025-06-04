@@ -28,5 +28,7 @@ export class HomePage {
     this.categoryMenJeansTitle = page.getByRole('heading', {
       name: 'Men - Jeans Products',
     });
+
+    this.brand
   }
 }

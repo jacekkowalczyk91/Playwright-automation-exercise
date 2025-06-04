@@ -71,4 +71,23 @@ test.describe('Products page tests', () => {
       expect(hasMatch).toBe(true);
     }
   });
+  test('View & Cart Brand Products', async ({ page }) => {
+    const firstBrand = 'Polo';
+    const secondBrand = 'Madame';
+
+    await productsPage.mainMenu.productsButton.click();
+    await expect(page.locator('.brands_products')).toBeVisible();
+
+    await page.locator(`a[href="/brand_products/${firstBrand}"]`).click();
+    await expect(page.locator('.features_items .title.text-center')).toHaveText(
+      `Brand - ${firstBrand} Products`
+    );
+    await expect(page.locator('.product-image-wrapper').first()).toBeVisible();
+
+    await page.locator(`a[href="/brand_products/${secondBrand}"]`).click();
+    await expect(page.locator('.features_items .title.text-center')).toHaveText(
+      `Brand - ${secondBrand} Products`
+    );
+    await expect(page.locator('.product-image-wrapper').first()).toBeVisible();
+  });
 });

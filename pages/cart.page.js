@@ -74,10 +74,7 @@ export class CartPage {
     await cartPage.creditCardPayButton.click();
   }
   async addingProductsToCart(page, cartPage, productIds) {
-    // const productIds = [1, 2, 3];
-
-    await cartPage.mainMenu.productsButton.click();
-
+    
     for (let i = 0; i < productIds.length; i++) {
       const id = productIds[i];
 

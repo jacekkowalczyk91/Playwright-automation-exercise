@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test';
 import { HomePage } from '../pages/home.page';
 import { LoginPage } from '../pages/login.page';
 import { ProductsPage } from '../pages/products.page';
+import { CartPage } from '../pages/cart.page';
+import { loginData } from '../test-data/login-data';
 
 test.describe('Homepage tests', () => {
   /** @type {import('../pages/home.page').HomePage} */
@@ -9,11 +11,13 @@ test.describe('Homepage tests', () => {
   let homePage;
   let loginPage;
   let productsPage;
+  let cartPage;
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     homePage = new HomePage(page);
     loginPage = new LoginPage(page);
     productsPage = new ProductsPage(page);
+    cartPage = new CartPage(page);
 
     await loginPage.cookiesBanner.waitFor({ state: 'visible', timeout: 2000 });
     await loginPage.cookiesBanner.click();
@@ -57,5 +61,62 @@ test.describe('Homepage tests', () => {
     await homePage.categoryMenJeansButton.click();
 
     await expect(homePage.categoryMenJeansTitle).toBeVisible();
+  });
+  test('Search Products and Verify Cart After Login', async ({ page }) => {
+    const searchText = 'top';
+    const names = ['top', 'shirt'];
+
+    await homePage.mainMenu.productsButton.click();
+    await expect(homePage.mainMenu.productsButton).toHaveCSS(
+      'color',
+      'rgb(255, 165, 0)'
+    );
+
+    await page.locator('#search_product').fill(searchText);
+    await page.locator('#submit_search').click();
+
+    await expect(page.locator('.features_items .title.text-center')).toHaveText(
+      'Searched Products'
+    );
+
+    const productName = page.locator('.productinfo > p');
+    const productCount = await productName.count();
+    expect(productCount).toBeGreaterThan(0);
+
+    for (let i = 0; i < productCount; i++) {
+      const productNames = await productName.nth(i).textContent();
+      const lowerProductNames = productNames.toLowerCase();
+
+      const match = names.some((name) => lowerProductNames.includes(name));
+      expect(match).toBe(true);
+    }
+    const productCards = page.locator('.productinfo');
+    const productsToAddCount = await productCards.count();
+    const productIds = [];
+
+    for (let i = 0; i < productsToAddCount; i++) {
+      const addButton = productCards.nth(i).locator('a.add-to-cart');
+      const id = await addButton.getAttribute('data-product-id');
+
+      if (id) {
+        productIds.push(id);
+      }
+    }
+    await cartPage.addingProductsToCart(page, cartPage, productIds);
+    await homePage.mainMenu.cartButton.click();
+    await expect(cartPage.cartProductsInfoBox).toBeVisible();
+
+    const cartItemsLocator = page.locator('[id^="product-"]');
+    const cartItems = await cartItemsLocator.count();
+    expect(cartItems).toBe(productIds.length);
+
+    await homePage.mainMenu.signUpNavbarButton.click();
+
+    await loginPage.loginInput.fill(loginData.userName);
+    await loginPage.passwordInput.fill(loginData.userPassword);
+    await loginPage.loginButton.click();
+
+    await homePage.mainMenu.cartButton.click();
+    await homePage.verifyingNumberOfProducts(page, productIds);
   });
 });

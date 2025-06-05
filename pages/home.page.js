@@ -1,4 +1,5 @@
 import { MainMenuComponent } from '../components/main-menu.component';
+import { expect } from '@playwright/test';
 
 export class HomePage {
   constructor(page) {
@@ -28,7 +29,10 @@ export class HomePage {
     this.categoryMenJeansTitle = page.getByRole('heading', {
       name: 'Men - Jeans Products',
     });
-
-    this.brand
+  }
+  async verifyingNumberOfProducts(page, productIds) {
+    const cartItemsLocator = page.locator('[id^="product-"]');
+    const cartItems = await cartItemsLocator.count();
+    expect(cartItems).toBe(productIds.length);
   }
 }

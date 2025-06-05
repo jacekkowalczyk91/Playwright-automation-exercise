@@ -163,6 +163,7 @@ test.describe('Homepage tests', () => {
   test('Remove products from cart', async ({ page }) => {
     const productIds = [1, 2, 3];
 
+    await cartPage.mainMenu.productsButton.click();
     await cartPage.addingProductsToCart(page, cartPage, productIds);
 
     await cartPage.mainMenu.cartButton.click();

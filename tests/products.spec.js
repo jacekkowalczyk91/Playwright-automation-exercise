@@ -90,4 +90,20 @@ test.describe('Products page tests', () => {
     );
     await expect(page.locator('.product-image-wrapper').first()).toBeVisible();
   });
+  test('Add review on product', async ({ page }) => {
+    await productsPage.mainMenu.productsButton.click();
+    await expect(productsPage.productListView).toBeVisible();
+
+    await productsPage.productDetailView.first().click();
+    await expect(page.locator('.category-tab.shop-details-tab')).toBeVisible();
+
+    await page.locator('#name').fill('imie');
+    await page.locator('#email').fill('meil@meil.com');
+    await page.locator('#review').fill('opinia');
+    await page.locator('#button-review').click();
+
+    await expect(
+      page.getByText('Thank you for your review.', { exact: true })
+    ).toBeVisible();
+  });
 });

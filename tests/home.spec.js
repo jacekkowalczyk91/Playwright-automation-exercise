@@ -119,4 +119,29 @@ test.describe('Homepage tests', () => {
     await homePage.mainMenu.cartButton.click();
     await homePage.verifyingNumberOfProducts(page, productIds);
   });
+  test('Add to cart from Recommended items', async ({ page }) => {
+    await page.locator('#footer').scrollIntoViewIfNeeded();
+
+    await expect(page.locator('.recommended_items')).toBeVisible();
+
+    const firstVisibleProduct = page
+      .locator('#recommended-item-carousel .product-image-wrapper')
+      .filter({
+        has: page.locator(':visible'),
+      })
+      .first();
+    const productName = await firstVisibleProduct.locator('p').textContent();
+
+    await expect(firstVisibleProduct).toBeVisible();
+    await firstVisibleProduct.hover();
+
+    const addToCart = firstVisibleProduct.locator('.add-to-cart');
+    await expect(addToCart).toBeVisible();
+    await addToCart.click();
+
+    await cartPage.cartViewInProductDetail.click();
+
+    const cartItems = page.locator('.cart_description h4 a');
+    await expect(cartItems).toContainText(productName.trim());
+  });
 });

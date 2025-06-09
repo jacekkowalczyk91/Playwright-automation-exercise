@@ -169,4 +169,21 @@ test.describe('Homepage tests', () => {
       page.locator('#slider-carousel .item.active h2')
     ).toBeVisible();
   });
+  test('Verify Scroll Up without Arrow button and Scroll Down functionality', async ({
+    page,
+  }) => {
+    await page.locator('#footer').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500);
+
+    await expect(page.locator('#footer')).toBeVisible();
+    await expect(page.locator('.single-widget h2')).toHaveText('Subscription');
+
+    await page.locator('#header').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500);
+
+    await expect(page.locator('#header')).toBeVisible();
+    await expect(
+      page.locator('#slider-carousel .item.active h2')
+    ).toBeVisible();
+  });
 });

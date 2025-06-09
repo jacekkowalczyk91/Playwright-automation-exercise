@@ -144,4 +144,29 @@ test.describe('Homepage tests', () => {
     const cartItems = page.locator('.cart_description h4 a');
     await expect(cartItems).toContainText(productName.trim());
   });
+  test('Verify Scroll Up using Arrow button and Scroll Down functionality', async ({
+    page,
+  }) => {
+    while (true) {
+      const isFooterFullyVisible = await page.evaluate(() => {
+        const footer = document.querySelector('footer');
+        if (!footer) return false;
+
+        const rect = footer.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+
+        return rect.top >= 0 && rect.bottom <= windowHeight;
+      });
+
+      if (isFooterFullyVisible) break;
+
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(100);
+    }
+    await page.locator('#scrollUp').click();
+
+    await expect(
+      page.locator('#slider-carousel .item.active h2')
+    ).toBeVisible();
+  });
 });
